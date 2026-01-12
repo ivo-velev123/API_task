@@ -3,4 +3,4 @@ from app import app
 
 class tempTest:
     def test(self):
-        pass
+        assert 1 == 1
