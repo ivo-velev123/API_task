@@ -20,9 +20,9 @@ class Ksb(db.Model):
 
 coins_duties = Table(
     "coins_duties",
-    db.metdadata,
+    db.metadata,
     Column("coin_id", String, ForeignKey('coins.id'), primary_key=True),
-    Column("duty_id", String, ForeignKey('duty.id'), primary_key=True)
+    Column("duty_id", String, ForeignKey('duties.id'), primary_key=True)
 )
 
 duties_ksbs = Table(
