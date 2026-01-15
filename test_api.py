@@ -1,6 +1,23 @@
 import pytest
-from app import app
+import os
+os.environ["db_url"] = 'sqlite:///:memory:'
 
-class Testtemp:
-    def test(self):
-        assert 1 == 1
+from app import app, db
+from models import Coin, Duty, Ksb
+
+@pytest.fixture()
+def client():
+    app.config["TESTING"] = True
+    with app.test_client() as test_client:
+        with app.app_context():
+            db.create_all()
+
+            yield test_client
+
+            db.drop_all()
+
+class TestCoins():
+    def test_get_coins_empty(self, client):
+        response = client.get('/coins')
+        assert response.status_code == 200
+        assert response.json == []
