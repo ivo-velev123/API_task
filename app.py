@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
 from extensions import db
 from dotenv import load_dotenv
@@ -22,7 +22,10 @@ def get_coins():
 
 @app.post("/coins")
 def create_coin():
-    return ("", 201)
+    data = request.json
+    coin_name = data["coin_name"]
+    response_data = {"coin_name": coin_name}
+    return jsonify(response_data), 201
 
 
 if __name__ == "__main__":
