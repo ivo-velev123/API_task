@@ -38,4 +38,4 @@ class TestCoins:
         response = client.get("/coins")
         assert response.status_code == 200
         assert len(response.json) > 0
-        assert response.json["coin_name"] == "automate"
+        assert response.json[0]["coin_name"] == "automate"
