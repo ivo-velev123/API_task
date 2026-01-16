@@ -29,3 +29,4 @@ class TestCoins:
         test_coin_data = {"coin_name": "automate"}
         response = client.post("/coins", json=test_coin_data)
         assert response.status_code == 201
+        assert response.json["coin_name"] == "automate"
