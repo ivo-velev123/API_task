@@ -1,9 +1,11 @@
 import pytest
 import os
-os.environ["db_url"] = 'sqlite:///:memory:'
+
+os.environ["db_url"] = "sqlite:///:memory:"
 
 from app import app, db
 from models import Coin, Duty, Ksb
+
 
 @pytest.fixture()
 def client():
@@ -16,8 +18,14 @@ def client():
 
             db.drop_all()
 
-class TestCoins():
+
+class TestCoins:
     def test_get_coins_empty(self, client):
-        response = client.get('/coins')
+        response = client.get("/coins")
         assert response.status_code == 200
         assert response.json == []
+
+    def test_create_coin(self, client):
+        test_coin_data = {"coin_name": "automate"}
+        response = client.post("/coins", json=test_coin_data)
+        assert response.status_code == 201
