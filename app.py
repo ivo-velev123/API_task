@@ -24,8 +24,10 @@ def get_coins():
 def create_coin():
     data = request.json
     coin_name = data["coin_name"]
-    response_data = {"coin_name": coin_name}
-    return jsonify(response_data), 201
+    new_coin = Coin(coin_name=coin_name)
+    db.session.add(new_coin)
+    db.session.commit()
+    return jsonify(new_coin.to_dict()), 201
 
 
 if __name__ == "__main__":
