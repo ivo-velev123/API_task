@@ -30,3 +30,4 @@ class TestCoins:
         response = client.post("/coins", json=test_coin_data)
         assert response.status_code == 201
         assert response.json["coin_name"] == "automate"
+        assert response.json["id"] is not None
