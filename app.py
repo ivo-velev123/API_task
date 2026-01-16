@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 import os
 from extensions import db
 from dotenv import load_dotenv
 from models import Coin
-
+import json
 
 app = Flask(__name__)
 
@@ -17,7 +17,9 @@ load_dotenv()
 
 @app.get("/coins")
 def get_coins():
-    return jsonify([])
+    coins = Coin.query.all()
+    data = [coin.to_dict() for coin in coins]
+    return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
 @app.post("/coins")
