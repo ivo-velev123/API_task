@@ -31,3 +31,11 @@ class TestCoins:
         assert response.status_code == 201
         assert response.json["coin_name"] == "automate"
         assert response.json["id"] is not None
+
+    def test_get_all_coins(self, client):
+        test_coin_data = {"coin_name": "automate"}
+        client.post("/coins", json=test_coin_data)
+        response = client.get("/coins")
+        assert response.status_code == 200
+        assert len(response.json) > 0
+        assert response.json["coin_name"] == "automate"
