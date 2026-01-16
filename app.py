@@ -14,9 +14,16 @@ db.init_app(app)
 
 load_dotenv()
 
-@app.get('/coins')
+
+@app.get("/coins")
 def get_coins():
     return jsonify([])
+
+
+@app.post("/coins")
+def create_coin():
+    return ("", 201)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
