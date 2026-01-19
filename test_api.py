@@ -39,3 +39,12 @@ class TestCoins:
         assert response.status_code == 200
         assert len(response.json) > 0
         assert response.json[0]["coin_name"] == "automate"
+
+    def test_get_coin_by_id(self, client):
+        test_coin_data = {"coin_name": "automate"}
+        post_response = client.post("/coins", json=test_coin_data)
+        coin_id = post_response.json["id"]
+        response = client.get(f"/coins/{coin_id}")
+        assert response.status_code == 200
+        assert response.json["id"] == coin_id
+        assert response.json["coin_name"] == "automate"
