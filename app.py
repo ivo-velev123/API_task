@@ -22,6 +22,14 @@ def get_coins():
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
+@app.get("/coins/<ID>")
+def get_coin_by_id(ID):
+    coin = Coin.query.filter_by(id=ID).first()
+    return Response(
+        json.dumps(coin.to_dict(), sort_keys=False), mimetype="application/json"
+    )
+
+
 @app.post("/coins")
 def create_coin():
     data = request.json
