@@ -48,3 +48,11 @@ class TestCoins:
         assert response.status_code == 200
         assert response.json["id"] == coin_id
         assert response.json["coin_name"] == "automate"
+
+    def test_update_coin(self, client):
+        test_coin_data = {"coin_name": "automate"}
+        post_response = client.post("/coins", json=test_coin_data)
+        coin_id = post_response.json["id"]
+        test_update_data = {"coin_name": "houston"}
+        response = client.put(f"/coins/{coin_id}", json=test_update_data)
+        assert response.status_code == 200
