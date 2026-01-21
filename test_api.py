@@ -59,3 +59,10 @@ class TestCoins:
         assert response.json["coin_name"] == "houston"
         get_response = client.get(f"/coins/{coin_id}")
         assert get_response.json["coin_name"] == "houston"
+
+    def test_delete_coin(self, client):
+        test_coin_data = {"coin_name": "automate"}
+        post_response = client.post("/coins", json=test_coin_data)
+        coin_id = post_response.json["id"]
+        delete_response = client.delete(f"/coins/{coin_id}")
+        assert delete_response.status_code == 200
