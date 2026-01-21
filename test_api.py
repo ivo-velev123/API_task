@@ -57,3 +57,5 @@ class TestCoins:
         response = client.put(f"/coins/{coin_id}", json=test_update_data)
         assert response.status_code == 200
         assert response.json["coin_name"] == "houston"
+        get_response = client.get(f"/coins/{coin_id}")
+        assert get_response.json["coin_name"] == "houston"
