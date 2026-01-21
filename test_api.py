@@ -66,3 +66,4 @@ class TestCoins:
         coin_id = post_response.json["id"]
         delete_response = client.delete(f"/coins/{coin_id}")
         assert delete_response.status_code == 200
+        assert delete_response.json["message"] == "deleted"
