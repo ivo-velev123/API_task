@@ -42,8 +42,13 @@ def create_coin():
 
 @app.put("/coins/<ID>")
 def update_coin(ID):
-    data = {"coin_name": "houston"}
-    return (jsonify(data), 200)
+    new_name = request.json["coin_name"]
+    coin = Coin.query.filter_by(id=ID).first()
+    coin.coin_name = new_name
+    db.session.commit()
+    return Response(
+        json.dumps(coin.to_dict(), sort_keys=False), mimetype="application/json"
+    )
 
 
 if __name__ == "__main__":
