@@ -26,7 +26,7 @@ def get_coins():
 def get_coin_by_id(ID):
     coin = Coin.query.filter_by(id=ID).first()
     if not coin:
-        return Response(json.dumps({"error": "Coin not found"}), 404)
+        return jsonify({"error": "Coin not found"}), 404
     return Response(
         json.dumps(coin.to_dict(), sort_keys=False), mimetype="application/json"
     )
@@ -55,6 +55,11 @@ def update_coin(ID):
 
 @app.delete("/coins/<ID>")
 def delete_coin(ID):
+    coin = Coin.query.filter_by(id=ID).first()
+    if not coin:
+        return jsonify({"error": "Coin not found"}), 404
+    db.session.delete(coin)
+    db.session.commit()
     return jsonify({"message": "deleted"}), 200
 
 
