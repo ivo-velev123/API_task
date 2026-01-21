@@ -67,3 +67,6 @@ class TestCoins:
         delete_response = client.delete(f"/coins/{coin_id}")
         assert delete_response.status_code == 200
         assert delete_response.json["message"] == "deleted"
+        get_response = client.get(f"/coins/{coin_id}")
+        assert get_response.status_code == 404
+        assert get_response.json["error"] == "Coin not found"
