@@ -42,7 +42,8 @@ def create_coin():
 
 @app.put("/coins/<ID>")
 def update_coin(ID):
-    return "", 200
+    data = {"coin_name": "houston"}
+    return (jsonify(data), 200)
 
 
 if __name__ == "__main__":
