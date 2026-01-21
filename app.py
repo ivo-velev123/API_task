@@ -51,5 +51,10 @@ def update_coin(ID):
     )
 
 
+@app.delete("/coins/<ID>")
+def delete_coin(ID):
+    return "", 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
