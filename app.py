@@ -40,5 +40,10 @@ def create_coin():
     return jsonify(new_coin.to_dict()), 201
 
 
+@app.put("/coins/<ID>")
+def update_coin(ID):
+    return "", 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
