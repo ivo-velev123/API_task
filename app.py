@@ -25,6 +25,8 @@ def get_coins():
 @app.get("/coins/<ID>")
 def get_coin_by_id(ID):
     coin = Coin.query.filter_by(id=ID).first()
+    if not coin:
+        return Response(json.dumps({"error": "Coin not found"}), 404)
     return Response(
         json.dumps(coin.to_dict(), sort_keys=False), mimetype="application/json"
     )
