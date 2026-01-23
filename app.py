@@ -70,6 +70,14 @@ def get_duties():
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
+@app.get("/duties/<ID>")
+def get_duties_by_id(ID):
+    duty = Duty().query.filter_by(id=ID).first()
+    return Response(
+        json.dumps(duty.to_dict(), sort_keys=False), mimetype="application/json"
+    )
+
+
 @app.post("/duties")
 def create_duty():
     data = request.json
