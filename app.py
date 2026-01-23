@@ -63,5 +63,10 @@ def delete_coin(ID):
     return jsonify({"message": "deleted"}), 200
 
 
+@app.get("/duties")
+def get_duties():
+    return jsonify([]), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
