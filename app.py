@@ -68,5 +68,12 @@ def get_duties():
     return jsonify([]), 200
 
 
+@app.post("/duties")
+def create_duty():
+    data = request.json
+    duty_name = data["duty_name"]
+    return jsonify({"duty_name": duty_name}), 201
+
+
 if __name__ == "__main__":
     app.run(debug=True)
