@@ -99,5 +99,10 @@ def update_duty(ID):
     )
 
 
+@app.delete("/duties/<ID>")
+def delete_duty(ID):
+    return jsonify({"message": "deleted"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
