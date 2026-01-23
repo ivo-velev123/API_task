@@ -70,3 +70,10 @@ class TestCoins:
         get_response = client.get(f"/coins/{coin_id}")
         assert get_response.status_code == 404
         assert get_response.json["error"] == "Coin not found"
+
+
+class TestDuty:
+    def test_get_duty_empty(self, client):
+        response = client.get("/duties")
+        assert response.status_code == 200
+        assert response.json == []
