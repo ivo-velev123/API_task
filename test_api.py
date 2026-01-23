@@ -83,3 +83,4 @@ class TestDuty:
         response = client.post("/duties", json=test_duty_data)
         assert response.status_code == 201
         assert response.json["duty_name"] == "duty_1"
+        assert response.json["id"] is not None
