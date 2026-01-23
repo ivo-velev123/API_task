@@ -103,6 +103,11 @@ def update_duty(ID):
 
 @app.delete("/duties/<ID>")
 def delete_duty(ID):
+    duty = Duty.query.filter_by(id=ID).first()
+    if not duty:
+        return jsonify({"error": "Duty not found"}), 404
+    db.session.delete(duty)
+    db.session.commit()
     return jsonify({"message": "deleted"}), 200
 
 
