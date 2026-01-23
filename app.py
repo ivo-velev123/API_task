@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, Response
 import os
 from extensions import db
 from dotenv import load_dotenv
-from models import Coin
+from models import Coin, Duty
 import json
 
 app = Flask(__name__)
@@ -72,7 +72,10 @@ def get_duties():
 def create_duty():
     data = request.json
     duty_name = data["duty_name"]
-    return jsonify({"duty_name": duty_name}), 201
+    new_duty = Duty(duty_name=duty_name)
+    db.session.add(new_duty)
+    db.session.commit()
+    return jsonify(new_duty.to_dict()), 201
 
 
 if __name__ == "__main__":
