@@ -77,3 +77,9 @@ class TestDuty:
         response = client.get("/duties")
         assert response.status_code == 200
         assert response.json == []
+
+    def test_create_duty(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        response = client.post("/duties", json=test_duty_data)
+        assert response.status_code == 201
+        assert response.json["duty_name"] == "duty_1"
