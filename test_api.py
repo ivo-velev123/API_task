@@ -102,7 +102,7 @@ class TestDuty:
         assert response.json["id"] == duty_id
         assert response.json["duty_name"] == "duty_1"
 
-    def test_update_coin(self, client):
+    def test_update_duty(self, client):
         test_duty_data = {"duty_name": "duty_1"}
         post_response = client.post("/duties", json=test_duty_data)
         duty_id = post_response.json["id"]
@@ -114,3 +114,11 @@ class TestDuty:
         get_response = client.get(f"/duties/{duty_id}")
         assert get_response.status_code == 200
         assert get_response.json["duty_name"] == "duty_2"
+
+    def test_delete_duty(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        post_response = client.post("/duties", json=test_duty_data)
+        duty_id = post_response.json["id"]
+        delete_response = client.delete(f"/duties/{duty_id}")
+        assert delete_response.status_code == 200
+        assert delete_response.json["message"] == "deleted"
