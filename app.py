@@ -88,5 +88,10 @@ def create_duty():
     return jsonify(new_duty.to_dict()), 201
 
 
+@app.put("/duties/<ID>")
+def update_duty(ID):
+    return jsonify({"duty_name": "duty_2"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
