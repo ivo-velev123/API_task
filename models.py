@@ -21,6 +21,12 @@ class Duty(db.Model):
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
     duty_name: Mapped[str] = mapped_column(nullable=False, unique=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "duty_name": self.duty_name,
+        }
+
 
 class Ksb(db.Model):
     __tablename__ = "ksbs"
