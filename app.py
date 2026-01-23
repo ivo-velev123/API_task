@@ -74,7 +74,7 @@ def get_duties():
 def get_duties_by_id(ID):
     duty = Duty().query.filter_by(id=ID).first()
     if not duty:
-        return jsonify({"error": "Duty not found"})
+        return jsonify({"error": "Duty not found"}), 404
     return Response(
         json.dumps(duty.to_dict(), sort_keys=False), mimetype="application/json"
     )
