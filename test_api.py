@@ -101,3 +101,12 @@ class TestDuty:
         assert response.status_code == 200
         assert response.json["id"] == duty_id
         assert response.json["duty_name"] == "duty_1"
+
+    def test_update_coin(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        post_response = client.post("/duties", json=test_duty_data)
+        duty_id = post_response.json["id"]
+        test_update_data = {"duty_name": "duty_2"}
+        response = client.put(f"/duties/{duty_id}")
+        assert response.status_code == 200
+        assert response.json["duty_name"] == "duty_2"
