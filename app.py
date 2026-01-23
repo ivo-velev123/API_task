@@ -90,7 +90,13 @@ def create_duty():
 
 @app.put("/duties/<ID>")
 def update_duty(ID):
-    return jsonify({"duty_name": "duty_2"}), 200
+    new_name = request.json["duty_name"]
+    duty = Duty.query.filter_by(id=ID).first()
+    duty.duty_name = new_name
+    db.session.commit()
+    return Response(
+        json.dumps(duty.to_dict(), sort_keys=False), mimetype="application/json"
+    )
 
 
 if __name__ == "__main__":
