@@ -107,7 +107,7 @@ class TestDuty:
         post_response = client.post("/duties", json=test_duty_data)
         duty_id = post_response.json["id"]
         test_update_data = {"duty_name": "duty_2"}
-        response = client.put(f"/duties/{duty_id}")
+        response = client.put(f"/duties/{duty_id}", json=test_update_data)
         assert response.status_code == 200
         assert response.json["duty_name"] == "duty_2"
         duty_id = post_response.json["id"]
