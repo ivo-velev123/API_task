@@ -84,3 +84,11 @@ class TestDuty:
         assert response.status_code == 201
         assert response.json["duty_name"] == "duty_1"
         assert response.json["id"] is not None
+
+    def get_all_duties(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        client.post("/coins", json=test_duty_data)
+        response = client.get("/coins")
+        assert response.status_code == 200
+        assert len(response.json) > 0
+        assert response.json[0]["duty_name"] == "duty_1"
