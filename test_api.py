@@ -92,3 +92,12 @@ class TestDuty:
         assert response.status_code == 200
         assert len(response.json) > 0
         assert response.json[0]["duty_name"] == "duty_1"
+
+    def test_get_duty_by_id(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        post_response = client.post("/duties", json=test_duty_data)
+        duty_id = post_response.json["id"]
+        response = client.get(f"/duties/{duty_id}")
+        assert response.status_code == 200
+        assert response.json["id"] == duty_id
+        assert response.json["duty_name"] == "duty_1"
