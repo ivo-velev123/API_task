@@ -156,7 +156,7 @@ def delete_ksb(ID):
         return jsonify({"error": "Ksb not found"}), 404
     db.session.delete(ksb)
     db.session.commit()
-    return jsonify({"message": "deleted"})
+    return jsonify({"message": "deleted"}), 200
 
 
 if __name__ == "__main__":
