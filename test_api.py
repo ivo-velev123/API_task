@@ -128,7 +128,7 @@ class TestDutys:
 
 
 class TestKsbs:
-    def get_empty_ksbs(self, client):
+    def test_get_empty_ksbs(self, client):
         response = client.get("/ksbs")
         assert response.status_code
         assert response.json == []
