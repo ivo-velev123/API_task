@@ -121,6 +121,8 @@ def get_ksbs():
 @app.get("/ksbs/<ID>")
 def get_ksb_by_id(ID):
     ksb = Ksb.query.filter_by(id=ID).first()
+    if not ksb:
+        return jsonify({"error": "Ksb not found"}), 404
     return Response(
         json.dumps(ksb.to_dict(), sort_keys=False), mimetype="application/json"
     )
