@@ -138,7 +138,13 @@ def create_ksb():
 
 @app.put("/ksbs/<ID>")
 def update_ksb(ID):
-    return jsonify({"ksb_name": "K2"}), 200
+    new_name = request.json["ksb_name"]
+    ksb = Ksb.query.filter_by(id=ID).first()
+    ksb.ksb_name = new_name
+    db.session.commit()
+    return Response(
+        json.dumps(ksb.to_dict(), sort_keys=False), mimetype="application/json"
+    )
 
 
 if __name__ == "__main__":
