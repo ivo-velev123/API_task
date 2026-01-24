@@ -138,3 +138,4 @@ class TestKsbs:
         response = client.post("/ksbs", json=test_ksb_data)
         assert response.status_code == 200
         assert response.json["ksb_name"] == "K1"
+        assert response.json["id"] is not None
