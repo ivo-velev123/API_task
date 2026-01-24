@@ -120,7 +120,10 @@ def get_ksbs():
 
 @app.get("/ksbs/<ID>")
 def get_ksb_by_id(ID):
-    return jsonify({"id": ID}), 200
+    ksb = Ksb.query.filter_by(id=ID).first()
+    return Response(
+        json.dumps(ksb.to_dict(), sort_keys=False), mimetype="application/json"
+    )
 
 
 @app.post("/ksbs")
