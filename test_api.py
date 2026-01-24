@@ -72,7 +72,7 @@ class TestCoins:
         assert get_response.json["error"] == "Coin not found"
 
 
-class TestDuty:
+class TestDutys:
     def test_get_duty_empty(self, client):
         response = client.get("/duties")
         assert response.status_code == 200
@@ -125,3 +125,10 @@ class TestDuty:
         get_response = client.get(f"/duties/{duty_id}")
         assert get_response.status_code == 404
         assert get_response.json["error"] == "Duty not found"
+
+
+class TestKsbs:
+    def get_empty_ksbs(self, client):
+        response = client.get("/ksbs")
+        assert response.status_code
+        assert response.json == []
