@@ -177,3 +177,6 @@ class TestKsbs:
         delete_response = client.delete(f"/ksbs/{ksb_id}")
         assert delete_response.status_code == 200
         assert delete_response.json["message"] == "deleted"
+        get_response = client.get(f"/ksbs/{ksb_id}")
+        assert get_response.status_code == 404
+        assert get_response.json["error"] == "Ksb not found"
