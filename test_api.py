@@ -129,7 +129,7 @@ class TestDutys:
 class TestKsbs:
     def test_get_empty_ksbs(self, client):
         response = client.get("/ksbs")
-        assert response.status_code
+        assert response.status_code == 200
         assert response.json == []
 
     def test_create_ksb(self, client):
