@@ -118,6 +118,11 @@ def get_ksbs():
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
+@app.get("/ksbs/<ID>")
+def get_ksb_by_id(ID):
+    return jsonify({"id": ID}), 200
+
+
 @app.post("/ksbs")
 def create_ksb():
     data = request.json
