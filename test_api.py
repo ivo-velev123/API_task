@@ -110,7 +110,6 @@ class TestDutys:
         response = client.put(f"/duties/{duty_id}", json=test_update_data)
         assert response.status_code == 200
         assert response.json["duty_name"] == "duty_2"
-        duty_id = post_response.json["id"]
         get_response = client.get(f"/duties/{duty_id}")
         assert get_response.status_code == 200
         assert get_response.json["duty_name"] == "duty_2"
@@ -166,3 +165,7 @@ class TestKsbs:
         put_response = client.put(f"/ksbs/{ksb_id}", json=test_update_data)
         assert put_response.status_code == 200
         assert put_response.json["ksb_name"] == "K2"
+        get_response = client.get(f"/ksbs/{ksb_id}")
+        assert get_response.status_code == 200
+        assert get_response.json["ksb_name"] == "K2"
+        assert get_response.json["id"] == ksb_id
