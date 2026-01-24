@@ -136,5 +136,10 @@ def create_ksb():
     return jsonify(new_ksb.to_dict()), 201
 
 
+@app.put("/ksbs/<ID>")
+def update_ksb(ID):
+    return jsonify({"ksb_name": "K2"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
