@@ -33,6 +33,12 @@ class Ksb(db.Model):
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
     ksb_name: Mapped[str] = mapped_column(nullable=False, unique=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "ksb_name": self.ksb_name,
+        }
+
 
 coins_duties = Table(
     "coins_duties",
