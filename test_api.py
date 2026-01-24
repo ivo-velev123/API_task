@@ -139,3 +139,12 @@ class TestKsbs:
         assert response.status_code == 200
         assert response.json["ksb_name"] == "K1"
         assert response.json["id"] is not None
+
+    def test_get_all_ksbs(self, client):
+        test_ksb_data = {"ksb_name": "K1"}
+        post_response = client.post("/ksbs", json=test_ksb_data)
+        ksb_id = post_response.json["id"]
+        response = client.get("/ksbs")
+        assert response.status_code == 200
+        assert response.json[0]["ksb_name"] == "K1"
+        assert response.json[0]["id"] == ksb_id
