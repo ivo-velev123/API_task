@@ -151,7 +151,12 @@ def update_ksb(ID):
 
 @app.delete("/ksbs/<ID>")
 def delete_ksb(ID):
-    return jsonify({"message": "deleted"}), 200
+    ksb = Ksb.query.filter_by(id=ID).first()
+    if not ksb:
+        return jsonify({"error": "Ksb not found"}), 404
+    db.session.delete(ksb)
+    db.session.commit()
+    return jsonify({"message": "deleted"})
 
 
 if __name__ == "__main__":
