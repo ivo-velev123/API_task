@@ -36,7 +36,14 @@ def get_coin_by_id(ID):
 def create_coin():
     data = request.json
     coin_name = data["coin_name"]
+    duty_ids = data.get("duty_ids", [])
+
     new_coin = Coin(coin_name=coin_name)
+
+    if duty_ids:
+        duties = Duty.query.filter(Duty.id.in_(duty_ids)).all()
+        new_coin.duties = duties
+
     db.session.add(new_coin)
     db.session.commit()
     return jsonify(new_coin.to_dict()), 201
