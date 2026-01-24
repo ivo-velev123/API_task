@@ -116,5 +116,10 @@ def get_ksbs():
     return jsonify([]), 200
 
 
+@app.post("/ksbs")
+def create_ksb():
+    return jsonify({"ksb_name": "K1"})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
