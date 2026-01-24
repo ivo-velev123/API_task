@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, Response
 import os
 from extensions import db
 from dotenv import load_dotenv
-from models import Coin, Duty
+from models import Coin, Duty, Ksb
 import json
 
 app = Flask(__name__)
@@ -118,7 +118,12 @@ def get_ksbs():
 
 @app.post("/ksbs")
 def create_ksb():
-    return jsonify({"ksb_name": "K1"})
+    data = request.json
+    ksb_name = data["ksb_name"]
+    new_ksb = Ksb(ksb_name=ksb_name)
+    db.session.add(new_ksb)
+    db.session.commit()
+    return jsonify(new_ksb.to_dict()), 201
 
 
 if __name__ == "__main__":
