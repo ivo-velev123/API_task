@@ -147,5 +147,10 @@ def update_ksb(ID):
     )
 
 
+@app.delete("/ksbs/<ID>")
+def delete_ksb(ID):
+    return jsonify({"message": "deleted"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
