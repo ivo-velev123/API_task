@@ -156,3 +156,4 @@ class TestKsbs:
         response = client.get(f"/ksbs/{ksb_id}")
         assert response.status_code == 200
         assert response.json["id"] == ksb_id
+        assert response.json["ksb_name"] == "K1"
