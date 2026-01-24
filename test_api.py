@@ -169,3 +169,11 @@ class TestKsbs:
         assert get_response.status_code == 200
         assert get_response.json["ksb_name"] == "K2"
         assert get_response.json["id"] == ksb_id
+
+    def test_delete_ksb(self, client):
+        test_ksb_data = {"ksb_name": "K1"}
+        post_response = client.post("/ksbs", json=test_ksb_data)
+        ksb_id = post_response.json["id"]
+        delete_response = client.delete(f"/ksbs/{ksb_id}")
+        assert delete_response.status_code == 200
+        assert delete_response.json["message"] == "deleted"
