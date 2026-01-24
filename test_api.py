@@ -180,3 +180,24 @@ class TestKsbs:
         get_response = client.get(f"/ksbs/{ksb_id}")
         assert get_response.status_code == 404
         assert get_response.json["error"] == "Ksb not found"
+
+
+class TestCoinDutyRelationships:
+    def test_create_coin_with_duties(self, client):
+        duty1_test_data = {"duty_name": "duty_1"}
+        duty1_response = client.post("/duties", json=duty1_test_data)
+        duty1_id = duty1_response.json["id"]
+
+        duty2_test_data = {"duty_name": "duty_2"}
+        duty2_response = client.post("/duties", json=duty2_test_data)
+        duty2_id = duty2_response.json["id"]
+
+        coin_data = {"coin_name": "automate", "duty_ids": [duty1_id, duty2_id]}
+        coin_response = client.post("/coins", json=coin_data)
+        coin_id = coin_response.json["id"]
+
+        assert coin_response.status_code == 201
+        assert coin_response.json["coin_name"] == "automate"
+
+        coin = Coin.query.get(coin_id)
+        assert len(coin.duties) == 2
