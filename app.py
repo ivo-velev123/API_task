@@ -65,14 +65,14 @@ def delete_coin(ID):
 
 @app.get("/duties")
 def get_duties():
-    duties = Duty().query.all()
+    duties = Duty.query.all()
     data = [duty.to_dict() for duty in duties]
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
 @app.get("/duties/<ID>")
 def get_duties_by_id(ID):
-    duty = Duty().query.filter_by(id=ID).first()
+    duty = Duty.query.filter_by(id=ID).first()
     if not duty:
         return jsonify({"error": "Duty not found"}), 404
     return Response(
