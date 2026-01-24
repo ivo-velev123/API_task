@@ -113,7 +113,9 @@ def delete_duty(ID):
 
 @app.get("/ksbs")
 def get_ksbs():
-    return jsonify([]), 200
+    ksbs = Ksb.query.all()
+    data = [ksb.to_dict() for ksb in ksbs]
+    return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
 @app.post("/ksbs")
