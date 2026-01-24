@@ -157,3 +157,12 @@ class TestKsbs:
         assert response.status_code == 200
         assert response.json["id"] == ksb_id
         assert response.json["ksb_name"] == "K1"
+
+    def test_update_ksb(self, client):
+        test_ksb_data = {"ksb_name": "K1"}
+        post_response = client.post("/ksbs", json=test_ksb_data)
+        ksb_id = post_response.json["id"]
+        test_update_data = {"ksb_name": "K2"}
+        put_response = client.put(f"/ksbs/{ksb_id}", json=test_update_data)
+        assert put_response.status_code == 200
+        assert put_response.json["ksb_name"] == "K2"
