@@ -1,44 +1,7 @@
 from extensions import db
 from sqlalchemy import Table, Column, String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
-
-
-class Coin(db.Model):
-    __tablename__ = "coins"
-    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
-    coin_name: Mapped[str] = mapped_column(nullable=False, unique=True)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "coin_name": self.coin_name,
-        }
-
-
-class Duty(db.Model):
-    __tablename__ = "duties"
-    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
-    duty_name: Mapped[str] = mapped_column(nullable=False, unique=True)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "duty_name": self.duty_name,
-        }
-
-
-class Ksb(db.Model):
-    __tablename__ = "ksbs"
-    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
-    ksb_name: Mapped[str] = mapped_column(nullable=False, unique=True)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "ksb_name": self.ksb_name,
-        }
-
 
 coins_duties = Table(
     "coins_duties",
@@ -53,3 +16,46 @@ duties_ksbs = Table(
     Column("duty_id", String, ForeignKey("duties.id"), primary_key=True),
     Column("ksb_id", String, ForeignKey("ksbs.id"), primary_key=True),
 )
+
+
+class Coin(db.Model):
+    __tablename__ = "coins"
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
+    coin_name: Mapped[str] = mapped_column(nullable=False, unique=True)
+
+    duties = relationship("Duty", secondary=coins_duties, back_populates="coins")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "coin_name": self.coin_name,
+        }
+
+
+class Duty(db.Model):
+    __tablename__ = "duties"
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
+    duty_name: Mapped[str] = mapped_column(nullable=False, unique=True)
+
+    coins = relationship("Coin", secondary=coins_duties, back_populates="duties")
+    ksbs = relationship("Ksb", secondary=duties_ksbs, back_populates="duties")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "duty_name": self.duty_name,
+        }
+
+
+class Ksb(db.Model):
+    __tablename__ = "ksbs"
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
+    ksb_name: Mapped[str] = mapped_column(nullable=False, unique=True)
+
+    duties = relationship("Duty", secondary=duties_ksbs, back_populates="ksbs")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "ksb_name": self.ksb_name,
+        }
