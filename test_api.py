@@ -201,3 +201,24 @@ class TestCoinDutyRelationships:
 
         coin = Coin.query.get(coin_id)
         assert len(coin.duties) == 2
+
+    def test_get_coin_with_duties(self, client):
+        duty1_test_data = {"duty_name": "duty_1"}
+        duty1_response = client.post("/duties", json=duty1_test_data)
+        duty1_id = duty1_response.json["id"]
+
+        duty2_test_data = {"duty_name": "duty_2"}
+        duty2_response = client.post("/duties", json=duty2_test_data)
+        duty2_id = duty2_response.json["id"]
+
+        coin_data = {"coin_name": "automate", "duty_ids": [duty1_id, duty2_id]}
+        coin_response = client.post("/coins", json=coin_data)
+        coin_id = coin_response.json["id"]
+
+        response = client.get(f"/coins/{coin_id}")
+
+        assert response.status_code == 200
+        assert "duties" in response.json
+        assert len(response.json["duties"]) == 2
+        assert response.json["duties"][0]["duty_name"] in ["duty_1", "duty_2"]
+        assert response.json["duties"][1]["duty_name"] in ["duty_1", "duty_2"]
