@@ -319,3 +319,29 @@ class TestDutyKsbRelationships:
         assert len(response.json["ksbs"]) == 2
         assert response.json["ksbs"][0]["ksb_name"] in ["K1", "K2"]
         assert response.json["ksbs"][1]["ksb_name"] in ["K1", "K2"]
+
+    def test_get_all_duties_with_ksbs(self, client):
+        ksb1_test_data = {"ksb_name": "K1"}
+        ksb1_response = client.post("/ksbs", json=ksb1_test_data)
+        ksb1_id = ksb1_response.json["id"]
+
+        ksb2_test_data = {"ksb_name": "K2"}
+        ksb2_response = client.post("/ksbs", json=ksb2_test_data)
+        ksb2_id = ksb2_response.json["id"]
+
+        duty1_data = {"duty_name": "duty_1", "ksb_ids": [ksb1_id]}
+        client.post("/duties", json=duty1_data)
+
+        duty2_data = {"duty_name": "duty_2", "ksb_ids": [ksb2_id]}
+        client.post("/duties", json=duty2_data)
+
+        response = client.get("/duties")
+
+        assert response.status_code == 200
+        assert len(response.json) == 2
+
+        assert "ksbs" in response.json[0]
+        assert len(response.json[0]["ksbs"]) == 1
+
+        assert "ksbs" in response.json[1]
+        assert len(response.json[1]["ksbs"]) == 1
