@@ -117,12 +117,21 @@ def create_duty():
 
 @app.put("/duties/<ID>")
 def update_duty(ID):
-    new_name = request.json["duty_name"]
+    data = request.json
     duty = Duty.query.filter_by(id=ID).first()
-    duty.duty_name = new_name
+
+    if "duty_name" in data:
+        duty.duty_name = data["duty_name"]
+
+    if "ksb_ids" in data:
+        ksb_ids = data["ksb_ids"]
+        new_ksbs = Ksb.query.filter(Ksb.id.in_(ksb_ids)).all()
+        duty.ksbs = new_ksbs
+
     db.session.commit()
     return Response(
-        json.dumps(duty.to_dict(), sort_keys=False), mimetype="application/json"
+        json.dumps(duty.to_dict(include_ksbs=True), sort_keys=False),
+        mimetype="application/json",
     )
 
 
