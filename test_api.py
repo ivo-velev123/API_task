@@ -345,3 +345,33 @@ class TestDutyKsbRelationships:
 
         assert "ksbs" in response.json[1]
         assert len(response.json[1]["ksbs"]) == 1
+
+    def test_update_duty_ksbs(self, client):
+        ksb1_test_data = {"ksb_name": "K1"}
+        ksb1_response = client.post("/ksbs", json=ksb1_test_data)
+        ksb1_id = ksb1_response.json["id"]
+
+        ksb2_test_data = {"ksb_name": "K2"}
+        ksb2_response = client.post("/ksbs", json=ksb2_test_data)
+        ksb2_id = ksb2_response.json["id"]
+
+        ksb3_test_data = {"ksb_name": "K3"}
+        ksb3_response = client.post("/ksbs", json=ksb3_test_data)
+        ksb3_id = ksb3_response.json["id"]
+
+        duty_data = {"duty_name": "duty_1", "ksb_ids": [ksb1_id, ksb2_id]}
+        duty_response = client.post("/duties", json=duty_data)
+        duty_id = duty_response.json["id"]
+
+        update_data = {"duty_name": "duty_1", "ksb_ids": [ksb2_id, ksb3_id]}
+        response = client.put(f"/duties/{duty_id}", json=update_data)
+
+        assert response.status_code == 200
+
+        duty = Duty.query.get(duty_id)
+        assert len(duty.ksbs) == 2
+
+        ksb_ids = [ksb.id for ksb in duty.ksbs]
+        assert ksb2_id in ksb_ids
+        assert ksb3_id in ksb_ids
+        assert ksb1_id not in ksb_ids
