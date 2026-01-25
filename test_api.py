@@ -298,3 +298,24 @@ class TestDutyKsbRelationships:
 
         duty = Duty.query.get(duty_id)
         assert len(duty.ksbs) == 2
+
+    def test_get_duty_with_ksbs(self, client):
+        ksb1_test_data = {"ksb_name": "K1"}
+        ksb1_response = client.post("/ksbs", json=ksb1_test_data)
+        ksb1_id = ksb1_response.json["id"]
+
+        ksb2_test_data = {"ksb_name": "K2"}
+        ksb2_response = client.post("/ksbs", json=ksb2_test_data)
+        ksb2_id = ksb2_response.json["id"]
+
+        duty_data = {"duty_name": "duty_1", "ksb_ids": [ksb1_id, ksb2_id]}
+        duty_response = client.post("/duties", json=duty_data)
+        duty_id = duty_response.json["id"]
+
+        response = client.get(f"/duties/{duty_id}")
+
+        assert response.status_code == 200
+        assert "ksbs" in response.json
+        assert len(response.json["ksbs"]) == 2
+        assert response.json["ksbs"][0]["ksb_name"] in ["K1", "K2"]
+        assert response.json["ksbs"][1]["ksb_name"] in ["K1", "K2"]
