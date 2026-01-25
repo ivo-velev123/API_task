@@ -248,3 +248,32 @@ class TestCoinDutyRelationships:
 
         assert "duties" in response.json[1]
         assert len(response.json[1]["duties"]) == 1
+
+    def test_update_coin_duties(self, client):
+        duty1_test_data = {"duty_name": "duty_1"}
+        duty1_response = client.post("/duties", json=duty1_test_data)
+        duty1_id = duty1_response.json["id"]
+
+        duty2_test_data = {"duty_name": "duty_2"}
+        duty2_response = client.post("/duties", json=duty2_test_data)
+        duty2_id = duty2_response.json["id"]
+
+        duty3_test_data = {"duty_name": "duty_3"}
+        duty3_response = client.post("/duties", json=duty3_test_data)
+        duty3_id = duty3_response.json["id"]
+
+        coin_data = {"coin_name": "automate", "duty_ids": [duty1_id, duty2_id]}
+        coin_response = client.post("/coins", json=coin_data)
+        coin_id = coin_response.json["id"]
+
+        update_data = {"coin_name": "automate", "duty_ids": [duty2_id, duty3_id]}
+        response = client.put(f"/coins/{coin_id}", json=update_data)
+
+        assert response.status_code == 200
+
+        coin = Coin.query.get(coin_id)
+        assert len(coin.duties) == 2
+        duty_ids = [duty.id for duty in coin.duties]
+        assert duty2_id in duty_ids
+        assert duty3_id in duty_ids
+        assert duty1_id not in duty_ids
