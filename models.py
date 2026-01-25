@@ -43,11 +43,14 @@ class Duty(db.Model):
     coins = relationship("Coin", secondary=coins_duties, back_populates="duties")
     ksbs = relationship("Ksb", secondary=duties_ksbs, back_populates="duties")
 
-    def to_dict(self):
-        return {
+    def to_dict(self, include_ksbs=False):
+        result = {
             "id": self.id,
             "duty_name": self.duty_name,
         }
+        if include_ksbs:
+            result["ksbs"] = [ksb.to_dict() for ksb in self.ksbs]
+        return result
 
 
 class Ksb(db.Model):
