@@ -52,12 +52,22 @@ def create_coin():
 
 @app.put("/coins/<ID>")
 def update_coin(ID):
-    new_name = request.json["coin_name"]
+    data = request.json
     coin = Coin.query.filter_by(id=ID).first()
-    coin.coin_name = new_name
+
+    if "coin_name" in data:
+        coin.coin_name = data["coin_name"]
+
+    if "duty_ids" in data:
+        duty_ids = data["duty_ids"]
+
+        new_duties = Duty.query.filter(Duty.id.in_(duty_ids)).all()
+        coin.duties = new_duties
+
     db.session.commit()
     return Response(
-        json.dumps(coin.to_dict(), sort_keys=False), mimetype="application/json"
+        json.dumps(coin.to_dict(include_duties=True), sort_keys=False),
+        mimetype="application/json",
     )
 
 
