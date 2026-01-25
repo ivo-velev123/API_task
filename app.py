@@ -18,7 +18,7 @@ load_dotenv()
 @app.get("/coins")
 def get_coins():
     coins = Coin.query.all()
-    data = [coin.to_dict() for coin in coins]
+    data = [coin.to_dict(include_duties=True) for coin in coins]
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
