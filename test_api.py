@@ -277,3 +277,24 @@ class TestCoinDutyRelationships:
         assert duty2_id in duty_ids
         assert duty3_id in duty_ids
         assert duty1_id not in duty_ids
+
+
+class TestDutyKsbRelationships:
+    def test_create_duty_with_ksbs(self, client):
+        ksb1_test_data = {"ksb_name": "K1"}
+        ksb1_response = client.post("/ksbs", json=ksb1_test_data)
+        ksb1_id = ksb1_response.json["id"]
+
+        ksb2_test_data = {"ksb_name": "K2"}
+        ksb2_response = client.post("/ksbs", json=ksb2_test_data)
+        ksb2_id = ksb2_response.json["id"]
+
+        duty_data = {"duty_name": "duty_1", "ksb_ids": [ksb1_id, ksb2_id]}
+        duty_response = client.post("/duties", json=duty_data)
+        duty_id = duty_response.json["id"]
+
+        assert duty_response.status_code == 201
+        assert duty_response.json["duty_name"] == "duty_1"
+
+        duty = Duty.query.get(duty_id)
+        assert len(duty.ksbs) == 2
