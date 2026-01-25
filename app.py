@@ -102,7 +102,13 @@ def get_duties_by_id(ID):
 def create_duty():
     data = request.json
     duty_name = data["duty_name"]
+    ksb_ids = data.get("ksb_ids", [])
     new_duty = Duty(duty_name=duty_name)
+
+    if ksb_ids:
+        ksbs = Ksb.query.filter(Ksb.id.in_(ksb_ids)).all()
+        new_duty.ksbs = ksbs
+
     db.session.add(new_duty)
     db.session.commit()
     return jsonify(new_duty.to_dict()), 201
