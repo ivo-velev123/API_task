@@ -84,7 +84,7 @@ def delete_coin(ID):
 @app.get("/duties")
 def get_duties():
     duties = Duty.query.all()
-    data = [duty.to_dict() for duty in duties]
+    data = [duty.to_dict(include_ksbs=True) for duty in duties]
     return Response(json.dumps(data, sort_keys=False), mimetype="application/json")
 
 
