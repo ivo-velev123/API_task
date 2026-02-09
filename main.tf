@@ -5,41 +5,41 @@ provider "aws" {
 data "aws_ami" "ubuntu" {
   most_recent = true
   filter {
-    name = "name"
+    name   = "name"
     values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
   }
   owners = ["099720109477"]
 }
 variable "db_url" {
-    description = "database url"
-    type = string
-    sensitive = true
+  description = "database url"
+  type        = string
+  sensitive   = true
 }
 
 resource "tls_private_key" "ssh_key" {
-    algorithm = "RSA"
-    rsa_bits = 4096
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "local_file" "private_key" {
-    content = tls_private_key.ssh_key.private_key_pem
-    filename = "./.ssh/terraform_rsa"
+  content  = tls_private_key.ssh_key.private_key_pem
+  filename = "./.ssh/terraform_rsa"
 }
 
 resource "local_file" "public_key" {
-    content = tls_private_key.ssh_key.public_key_openssh
-    filename = "./.ssh/terraform_rsa.pub"
+  content  = tls_private_key.ssh_key.public_key_openssh
+  filename = "./.ssh/terraform_rsa.pub"
 }
 
 resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
   subnet_id              = "subnet-ba3fc8d3"
-  vpc_security_group_ids = ["sg-0213e780821464075"]
+  vpc_security_group_ids = ["sg-9c2893f5"]
   key_name               = "terraform-key"
   user_data = templatefile("${path.module}/cloud-init.yaml.tmpl", {
-    instance_name      = "ivo-flask-api"
-    db_url             = var.db_url
+    instance_name = "ivo-flask-api"
+    db_url        = var.db_url
   })
 
 
@@ -47,3 +47,4 @@ resource "aws_instance" "app_server" {
     Name = "ivo-flask-api"
   }
 }
+
