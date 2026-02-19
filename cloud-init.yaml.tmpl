@@ -4,6 +4,7 @@ packages:
   - nginx
   - git
   - docker.io
+  - nginx-extras
 
 write_files:
   - path: /etc/nginx/sites-available/my-site.conf
@@ -19,6 +20,8 @@ write_files:
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
+            server_tokens off;
+            more_set_headers "Server: https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1"
         }
       }
 
