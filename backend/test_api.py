@@ -3,8 +3,8 @@ import os
 
 os.environ["db_url"] = "sqlite:///:memory:"
 
-from app import app, db
-from models import Coin, Duty, Ksb
+from backend.app import app, db
+from backend.models import Coin, Duty
 
 
 @pytest.fixture()

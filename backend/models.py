@@ -1,4 +1,4 @@
-from extensions import db
+from backend.extensions import db
 from sqlalchemy import Table, Column, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
