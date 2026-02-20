@@ -125,6 +125,21 @@ class TestDutys:
         assert get_response.status_code == 404
         assert get_response.json["error"] == "Duty not found"
 
+    def test_duty_has_description(self, client):
+        test_duty_data = {"duty_name": "duty_1", "description": "this is a description"}
+        response = client.post("/duties", json=test_duty_data)
+        duty_id = response.json["id"]
+        assert response.status_code == 201
+
+        get_response = client.get(f"/duties/{duty_id}")
+        assert get_response.status_code == 200
+        assert get_response.json["description"] == "this is a description"
+
+    def test_duty_description_is_optional(self, client):
+        test_duty_data = {"duty_name": "duty_1"}
+        response = client.post("/duties", json=test_duty_data)
+        assert response.status_code == 201
+        assert response.json["description"] is None
 
 class TestKsbs:
     def test_get_empty_ksbs(self, client):

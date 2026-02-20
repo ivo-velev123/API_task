@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, Response
 import os
-from extensions import db
+from backend.extensions import db
 from dotenv import load_dotenv
-from models import Coin, Duty, Ksb
+from backend.models import Coin, Duty, Ksb
 import json
 
 app = Flask(__name__)
@@ -103,8 +103,9 @@ def get_duties_by_id(ID):
 def create_duty():
     data = request.json
     duty_name = data["duty_name"]
+    description = data.get("description", None)
     ksb_ids = data.get("ksb_ids", [])
-    new_duty = Duty(duty_name=duty_name)
+    new_duty = Duty(duty_name=duty_name, duty_description=description)
 
     if ksb_ids:
         ksbs = Ksb.query.filter(Ksb.id.in_(ksb_ids)).all()

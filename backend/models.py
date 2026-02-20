@@ -39,6 +39,7 @@ class Duty(db.Model):
     __tablename__ = "duties"
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid.uuid4()))
     duty_name: Mapped[str] = mapped_column(nullable=False, unique=True)
+    duty_description: Mapped[str] = mapped_column(nullable=True, unique=True)
 
     coins = relationship("Coin", secondary=coins_duties, back_populates="duties")
     ksbs = relationship("Ksb", secondary=duties_ksbs, back_populates="duties")
@@ -47,6 +48,7 @@ class Duty(db.Model):
         result = {
             "id": self.id,
             "duty_name": self.duty_name,
+            "description": self.duty_description,
         }
         if include_ksbs:
             result["ksbs"] = [ksb.to_dict() for ksb in self.ksbs]
