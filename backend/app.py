@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, Response
 import os
-from backend.extensions import db
+from app.extensions import db
 from dotenv import load_dotenv
-from backend.models import Coin, Duty, Ksb
+from app.models import Coin, Duty, Ksb
 import json
 
 app = Flask(__name__)

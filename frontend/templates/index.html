@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index page</title>
+</head>
+<body>
+    {% for coin in coins %}
+        <h2>{{ coin["coin_name"] }}</h2>
+        <ul>
+            {% if coin["duties"] %}
+                {% for duty in coin["duties"] %}
+                    <li><a href="/?duty_id={{ duty["id"] }}">{{ duty["duty_name"] }}</a></li>
+                {% endfor %}
+            {% else %}
+                <li>This coin has no duties</li>
+            {% endif %}
+        </ul>
+    {% endfor %}
+
+    {% if selected_duty %}
+        <hr>
+        <h2>{{ selected_duty["duty_name"] }}</h2>
+        {% if selected_duty["description"] %}
+            <p>{{ selected_duty["description"] }}</p>
+        {% endif %}
+        <h3>Associated coins</h3>
+        <ul>
+            {% for coin in linked_coins %}
+                <li>{{ coin["coin_name"] }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
