@@ -13,7 +13,7 @@ def test_can_access_admin(admin):
 def test_can_create_coin(admin):
     admin.goto(f"{BASE_URL}/admin")
     admin.fill("input[name='coin_name']", "Test Coin")
-    admin.clilck("button:has-text('Add coin')")
+    admin.click("button:has-text('Add coin')")
     assert admin.locator("td:has-text('Test Coin')").count() > 0
 
 def test_can_delete_coin(admin):
