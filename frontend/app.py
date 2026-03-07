@@ -112,3 +112,37 @@ def edit_coin(id):
         "duty_ids": duty_ids
     })
     return redirect("/admin")
+
+@app.post("/admin/duties")
+def create_duty():
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.post(f"{BACKEND_URL}/duties", json={
+        "duty_name": request.form.get("duty_name"),
+        "description": request.form.get("description") or None,
+    })
+    return redirect("/admin")
+
+@app.post("/admin/duties/<id>/delete")
+def delete_duty(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.delete(f"{BACKEND_URL}/duties/{id}")
+    return redirect("/admin")
+
+@app.get("/admin/duties/<id>/edit")
+def edit_duty_page(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    duty = requests.get(f"{BACKEND_URL}/duties/{id}").json()
+    return render_template("edit_duty.html", duty=duty)
+
+@app.post("/admin/duties/<id>/edit")
+def edit_duty(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.put(f"{BACKEND_URL}/duties/{id}", json={
+        "duty_name": request.form["duty_name"],
+        "description": request.form.get("description") or None,
+    })
+    return redirect("/admin")

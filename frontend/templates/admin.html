@@ -49,6 +49,15 @@
         </tbody>
     </table>
 
+    <h2>Add Duty</h2>
+    <form method="post" action="/admin/duties">
+        <label>Name: <input name="duty_name" required></label>
+        <br>
+        <label>Description: <input name="description"></label>
+        <br>
+        <button type="submit">Add duty</button>
+    </form>
+
     <h2>Duties</h2>
     <table>
         <thead>
@@ -63,7 +72,12 @@
             <tr>
                 <td>{{ duty.duty_name }}</td>
                 <td>{{ duty.description or '-' }}</td>
-                <td>Edit | Delete</td>
+                <td>
+                    <a href="/admin/duties/{{ duty.id }}/edit">Edit</a>
+                    <form method="post" action="/admin/duties/{{ duty.id }}/delete">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
