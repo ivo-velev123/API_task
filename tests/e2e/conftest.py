@@ -1,21 +1,26 @@
 import pytest
 import requests
-from playwright.sync_api import Page
+from playwright.sync_api import Page, Browser
 
 BASE_URL = "http://localhost:5001"
 BACKEND_URL = "http://localhost:5000"
 
 @pytest.fixture(autouse=True, scope="session")
-def seed_coins():
-    duty = requests.post(f"{BACKEND_URL}/duties", json={
-        "duty_name": "Test Duty",
-        "description": "A test duty"
-    }).json()
+def seed_coins(browser):
+    page = browser.new_page()
+    page.goto(f"{BASE_URL}/login")
+    page.fill("input[name='username']", "admin")
+    page.fill("input[name='password']", "adminpass")
+    page.click("button[type='submit']")
 
-    requests.post(f"{BACKEND_URL}/coins", json={
-        "coin_name": "Test Coin",
-        "duty_ids": [duty["id"]]
-    })
+    page.goto(f"{BASE_URL}/admin")
+    page.fill("input[name='duty_name']", "Test Duty")
+    page.click("button:has-text('Add duty')")
+
+    page.goto(f"{BASE_URL}/admin")
+    page.fill("input[name='coin_name']", "Test Coin")
+    page.click("button:has-text('Add coin')")
+    page.close()
 
 @pytest.fixture
 def anonymous(page: Page):
