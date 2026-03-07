@@ -3,6 +3,8 @@ import requests
 import os
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from collections import deque
+import time
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
@@ -21,6 +23,26 @@ with app.app_context():
 
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:5000")
 completions = set()
+
+request_log = deque(maxlen=100)
+
+@app.before_request
+def start_timer():
+    request.start_time = time.time()
+
+@app.after_request
+def log_request(response):
+    if not request.path.startswith("/logs"):
+        request_log.appendleft({
+            "time": time.strftime("%H:%M:%S"),
+            "method": request.method,
+            "path": request.path,
+            "status": response.status_code,
+            "user": session.get("username", "anon"),
+            "ip": request.remote_addr,
+            "ms": round((time.time() - getattr(request, "_start_time", time.time())) * 1000),
+        })
+    return response
 
 @app.route('/')
 def index():
@@ -77,6 +99,12 @@ def admin_page():
     coins = requests.get(f"{BACKEND_URL}/coins").json()
     duties = requests.get(f"{BACKEND_URL}/duties").json()
     return render_template("admin.html", coins=coins, duties=duties)
+
+@app.get("/logs")
+def logs_page():
+    if session.get("role") != "admin":
+        return redirect("/")
+    return render_template("logs.html", logs=list(request_log))
 
 @app.post("/admin/coins")
 def create_coin():
