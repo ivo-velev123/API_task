@@ -34,7 +34,7 @@ jobs:
               run: docker-compose up -d --build
 
             - name: Wait for services to be ready
-              run: sleep 30
+              run: sleep 15
 
             - name: Seed users
               run: docker-compose exec -T frontend python create_user.py

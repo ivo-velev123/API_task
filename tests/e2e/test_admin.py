@@ -12,14 +12,25 @@ def test_can_access_admin(admin):
 
 def test_can_create_coin(admin):
     admin.goto(f"{BASE_URL}/admin")
-    admin.fill("input[name='coin_name']", "Test Coin")
+    admin.fill("input[name='coin_name']", "Test Coin To Delete")
     admin.click("button:has-text('Add coin')")
-    assert admin.locator("td:has-text('Test Coin')").count() > 0
+    assert admin.locator("td:has-text('Test Coin To Delete')").count() > 0
 
 def test_can_delete_coin(admin):
     admin.goto(f"{BASE_URL}/admin")
-    admin.locator("button:has-text('Delete')").first.click()
-    assert admin.url == f"{BASE_URL}/admin"
+    admin.locator("tr:has-text('Test Coin To Delete')").locator("button:has-text('Delete')").click()
+    assert admin.locator("td:has-text('Test Coin To Delete')").count() == 0
+
+def test_can_create_duty(admin):
+    admin.goto(f"{BASE_URL}/admin")
+    admin.fill("input[name='duty_name']", "Test Duty To Delete")
+    admin.click("button:has-text('Add duty')")
+    assert admin.locator("td:has-text('Test Duty To Delete')").count() > 0
+
+def test_can_delete_duty(admin):
+    admin.goto(f"{BASE_URL}/admin")
+    admin.locator("tr:has-text('Test Duty To Delete')").locator("button:has-text('Delete')").click()
+    assert admin.locator("td:has-text('Test Duty To Delete')").count() == 0
 
 def test_can_access_logs(admin):
     admin.goto(f"{BASE_URL}/logs")
