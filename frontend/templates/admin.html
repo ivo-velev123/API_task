@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <a href="/">Back to coins</a>
+    <hr>
+
+    <h2>Coins</h2>
+
+    <h2>Add coin</h2>
+    <form method="post" action="/admin/coins">
+        <label>Name: <input name="coin_name" required></label>
+        <br>
+        <label>Duties:
+            <select name="duty_ids" multiple size="4">
+                {% for duty in duties %}
+                    <option value="{{ duty.id }}">{{ duty.duty_name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <br>
+        <button type="submit">Add coin</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Duties</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for coin in coins %}
+            <tr>
+                <td>{{ coin.coin_name }}</td>
+                <td>{{ coin.duties | map(attribute='duty_name') | join(', ') or '-' }}</td>
+                <td>
+                    <a href="/admin/coins/{{ coin.id }}/edit">Edit</a>
+                    <form method="post" action="/admin/coins/{{ coin.id }}/delete">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Add Duty</h2>
+    <form method="post" action="/admin/duties">
+        <label>Name: <input name="duty_name" required></label>
+        <br>
+        <label>Description: <input name="description"></label>
+        <br>
+        <button type="submit">Add duty</button>
+    </form>
+
+    <h2>Duties</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for duty in duties %}
+            <tr>
+                <td>{{ duty.duty_name }}</td>
+                <td>{{ duty.description or '-' }}</td>
+                <td>
+                    <a href="/admin/duties/{{ duty.id }}/edit">Edit</a>
+                    <form method="post" action="/admin/duties/{{ duty.id }}/delete">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

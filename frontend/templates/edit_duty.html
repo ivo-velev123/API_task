@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Edit duty</title>
+    </head>
+    <body>
+        <h1>Edit Duty</h1>
+        <form method="post" action="/admin/duties/{{ duty.id }}/edit">
+            <label>Name: <input name="duty_name" value="{{ duty.duty_name }}" required></label>
+            <br>
+            <label>Description: <input name="description" value="{{ duty.description or '' }}"></label>
+            <br>
+            <button type="submit">Save</button>
+            <a href="/admin">Cancel</a>
+        </form>
+    </body>
+</html>

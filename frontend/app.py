@@ -1,0 +1,176 @@
+from flask import Flask, render_template, request, session, redirect
+import requests
+import os
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from collections import deque
+import time
+
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    role = db.Column(db.String, nullable=False)
+
+with app.app_context():
+    db.create_all()
+
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:5000")
+completions = set()
+
+request_log = deque(maxlen=100)
+
+@app.before_request
+def start_timer():
+    request.start_time = time.time()
+
+@app.after_request
+def log_request(response):
+    if not request.path.startswith("/logs"):
+        request_log.appendleft({
+            "time": time.strftime("%H:%M:%S"),
+            "method": request.method,
+            "path": request.path,
+            "status": response.status_code,
+            "user": session.get("username", "anon"),
+            "ip": request.remote_addr,
+            "ms": round((time.time() - getattr(request, "_start_time", time.time())) * 1000),
+        })
+    return response
+
+@app.route('/')
+def index():
+    all_coins = requests.get(f"{BACKEND_URL}/coins").json()
+    for coin in all_coins:
+        coin["completed"] = coin["id"] in completions
+
+    selected_duty = None
+    linked_coins = []
+
+    duty_id = request.args.get("duty_id")
+    if duty_id:
+        selected_duty = requests.get(f"{BACKEND_URL}/duties/{duty_id}").json()
+        linked_coins = [
+            coin for coin in all_coins
+            if any(d["id"] == duty_id for d in coin.get("duties", []))
+        ]
+
+    return render_template("index.html", coins=all_coins, selected_duty=selected_duty, linked_coins=linked_coins, role=session.get("role", "anonymous"), session=session)
+
+@app.get("/login")
+def login_page():
+    return render_template("login.html")
+@app.post("/login")
+def login():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    user = User.query.filter_by(username=username).first()
+    if user and check_password_hash(user.password, password):
+        session["username"] = username
+        session["role"] = user.role
+        return redirect("/")
+    return render_template("login.html", error="Invalid username or password")
+
+@app.post("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+@app.post("/coins/<id>/toggle")
+def toggle_coin(id):
+    if session.get("role") not in ("user", "admin"):
+        return redirect("/login")
+    if id in completions:
+        completions.discard(id)
+    else:
+        completions.add(id)
+    return redirect("/")
+
+@app.get("/admin")
+def admin_page():
+    if session.get("role") != "admin":
+        return redirect("/")
+    coins = requests.get(f"{BACKEND_URL}/coins").json()
+    duties = requests.get(f"{BACKEND_URL}/duties").json()
+    return render_template("admin.html", coins=coins, duties=duties)
+
+@app.get("/logs")
+def logs_page():
+    if session.get("role") != "admin":
+        return redirect("/")
+    return render_template("logs.html", logs=list(request_log))
+
+@app.post("/admin/coins")
+def create_coin():
+    if session.get("role") != "admin":
+        return redirect("/")
+    duty_ids = request.form.getlist("duty_ids")
+    requests.post(f"{BACKEND_URL}/coins", json={"coin_name": request.form["coin_name"], "duty_ids": duty_ids})
+
+    return redirect("/admin")
+
+@app.post("/admin/coins/<id>/delete")
+def delete_coin(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.delete(f"{BACKEND_URL}/coins/{id}")
+    return redirect("/admin")
+
+@app.get("/admin/coins/<id>/edit")
+def edit_coin_page(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    coin = requests.get(f"{BACKEND_URL}/coins/{id}").json()
+    duties = requests.get(f"{BACKEND_URL}/duties").json()
+    return render_template("edit_coin.html", coin=coin, duties=duties)
+
+@app.post("/admin/coins/<id>/edit")
+def edit_coin(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    duty_ids = request.form.getlist("duty_ids")
+    requests.put(f"{BACKEND_URL}/coins/{id}", json={
+        "coin_name": request.form["coin_name"],
+        "duty_ids": duty_ids
+    })
+    return redirect("/admin")
+
+@app.post("/admin/duties")
+def create_duty():
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.post(f"{BACKEND_URL}/duties", json={
+        "duty_name": request.form.get("duty_name"),
+        "description": request.form.get("description") or None,
+    })
+    return redirect("/admin")
+
+@app.post("/admin/duties/<id>/delete")
+def delete_duty(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.delete(f"{BACKEND_URL}/duties/{id}")
+    return redirect("/admin")
+
+@app.get("/admin/duties/<id>/edit")
+def edit_duty_page(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    duty = requests.get(f"{BACKEND_URL}/duties/{id}").json()
+    return render_template("edit_duty.html", duty=duty)
+
+@app.post("/admin/duties/<id>/edit")
+def edit_duty(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    requests.put(f"{BACKEND_URL}/duties/{id}", json={
+        "duty_name": request.form["duty_name"],
+        "description": request.form.get("description") or None,
+    })
+    return redirect("/admin")

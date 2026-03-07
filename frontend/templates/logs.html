@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Logs</title>
+    </head>
+    <body>
+        <h1>Request Log</h1>
+        <a href="/">Back to coins</a>
+        <hr>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>Status</th>
+                    <th>User</th>
+                    <th>IP</th>
+                    <th>ms</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in logs %}
+                <tr>
+                    <td>{{ l.time }}</td>
+                    <td>{{ l.method }}</td>
+                    <td>{{ l.path }}</td>
+                    <td>{{ l.status }}</td>
+                    <td>{{ l.user }}</td>
+                    <td>{{ l.ip }}</td>
+                    <td>{{ l.ms }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Coins</title>
+    </head>
+    <body>
+        <nav>
+            {% if role == "anonymous" %}
+                <a href="/login">Login</a>
+            {% else %}
+                Logged in as {{ session["username"] }} ({{ role }})
+                <form method="post" action="/logout" style="display:inline">
+                    <button type="submit">Logout</button>
+                </form>
+            {% endif %}
+            {% if role == "admin" %}
+                | <a href="/admin">Admin</a>
+                | <a href="/logs">Logs</a>
+            {% endif %}
+        </nav>
+        <hr>
+
+        {% for coin in coins %}
+            <h2>{{ coin.coin_name }}</h2>
+            {% if coin.completed %}
+                <p>✓ Completed</p>
+            {% endif %}
+            <ul>
+                {% if coin.duties %}
+                    {% for duty in coin.duties %}
+                        <li><a href="/?duty_id={{ duty.id }}">{{ duty.duty_name }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>This coin has no duties</li>
+                {% endif %}
+            </ul>
+            {% if role in ("user", "admin") %}
+                <form method="post" action="/coins/{{ coin.id }}/toggle">
+                    <button type="submit">
+                        {{ "Mark incomplete" if coin.completed else "Mark complete" }}
+                    </button>
+                </form>
+            {% endif %}
+        {% endfor %}
+
+        {% if selected_duty %}
+            <hr>
+            <h2>{{ selected_duty.duty_name }}</h2>
+            <p>{{ selected_duty.description or "No description provided." }}</p>
+            <h3>Associated coins</h3>
+            <ul>
+                {% for coin in linked_coins %}
+                    <li>{{ coin.coin_name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </body>
+</html>
