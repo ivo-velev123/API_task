@@ -93,3 +93,22 @@ def delete_coin(id):
         return redirect("/")
     requests.delete(f"{BACKEND_URL}/coins/{id}")
     return redirect("/admin")
+
+@app.get("/admin/coins/<id>/edit")
+def edit_coin_page(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    coin = requests.get(f"{BACKEND_URL}/coins/{id}").json()
+    duties = requests.get(f"{BACKEND_URL}/duties").json()
+    return render_template("edit_coin.html", coin=coin, duties=duties)
+
+@app.post("/admin/coins/<id>/edit")
+def edit_coin(id):
+    if session.get("role") != "admin":
+        return redirect("/")
+    duty_ids = request.form.getlist("duty_ids")
+    requests.put(f"{BACKEND_URL}/coins/{id}", json={
+        "coin_name": request.form["coin_name"],
+        "duty_ids": duty_ids
+    })
+    return redirect("/admin")

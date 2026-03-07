@@ -39,6 +39,7 @@
                 <td>{{ coin.coin_name }}</td>
                 <td>{{ coin.duties | map(attribute='duty_name') | join(', ') or '-' }}</td>
                 <td>
+                    <a href="/admin/coins/{{ coin.id }}/edit">Edit</a>
                     <form method="post" action="/admin/coins/{{ coin.id }}/delete">
                         <button type="submit">Delete</button>
                     </form>

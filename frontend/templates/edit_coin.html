@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Edit Coin</title>
+    </head>
+    <body>
+        <h1>Edit Coin</h1>
+        <form method="post" action="/admin/coins/{{ coin.id }}/edit">
+            <label>Name: <input name="coin_name" value="{{ coin.coin_name }}" required></label>
+            <br>
+            <label>Duties:
+                <select name="duty_ids" multiple size="4">
+                    {% for duty in duties %}
+                        <option value="{{ duty.id }}"
+                            {% if duty.id in coin.duties | map(attribute='id') | list %}
+                                selected
+                            {% endif %}>
+                            {{ duty.duty_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <br>
+            <button type="submit">Save</button>
+            <a href="/admin">Cancel</a>
+        </form>
+    </body>
+</html>
